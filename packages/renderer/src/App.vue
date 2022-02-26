@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import ReactiveCounter from '/@/components/ReactiveCounter.vue';
 import ReactiveHash from '/@/components/ReactiveHash.vue';
-import ElectronVersions from '/@/components/ElectronVersions.vue';</script>
+import ElectronVersions from '/@/components/ElectronVersions.vue';
+import RunButton from '/@/components/RunButton.vue';
+</script>
 
 <template>
   <img
@@ -10,6 +12,7 @@ import ElectronVersions from '/@/components/ElectronVersions.vue';</script>
     width="150"
   >
 
+  <run-button />
   <p>
     For a guide and recipes on how to configure / customize this project,<br>
     check out the
@@ -50,6 +53,7 @@ import ElectronVersions from '/@/components/ElectronVersions.vue';</script>
   margin: 60px auto;
   max-width: 700px;
 }
+
 fieldset {
   margin: 2rem;
   padding: 1rem;
