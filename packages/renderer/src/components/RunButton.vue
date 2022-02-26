@@ -7,7 +7,10 @@ function runShutdown() {
 </script>
 
 <template>
-  <button @click="runShutdown">
+  <button
+    class="underline"
+    @click="runShutdown"
+  >
     Run Me
   </button>
 </template>
