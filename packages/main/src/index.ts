@@ -2,6 +2,9 @@ import {app} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
 
+const ElectronStore = require('electron-store');
+ElectronStore.initRenderer();
+
 
 /**
  * Prevent multiple instances
