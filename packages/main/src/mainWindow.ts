@@ -4,6 +4,7 @@ import {URL} from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
+    frame: false,
     show: false, // Use 'ready-to-show' event to show window
     webPreferences: {
       nativeWindowOpen: true,
