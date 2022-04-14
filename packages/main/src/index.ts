@@ -5,6 +5,9 @@ import {restoreOrCreateWindow} from '/@/mainWindow';
 const ElectronStore = require('electron-store');
 ElectronStore.initRenderer();
 
+app.setLoginItemSettings({
+  openAtLogin: true,
+});
 
 /**
  * Prevent multiple instances
