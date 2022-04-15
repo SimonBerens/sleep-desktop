@@ -47,6 +47,7 @@
     "vue-tsc": "0.31.4"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.4.1",
     "electron-store": "^8.0.1",
     "electron-updater": "4.6.5",
     "vue": "3.2.31"
