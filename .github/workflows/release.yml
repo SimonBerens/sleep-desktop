@@ -96,6 +96,9 @@ jobs:
           node-version: 16 # Need for npm >=7.7
           cache: 'npm'
 
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo snap install snapcraft --classic
+
       - name: Install dependencies
         run: npm ci
 
