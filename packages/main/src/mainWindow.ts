@@ -4,8 +4,8 @@ import {URL} from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
-    frame: false,
-    height: 150,
+    frame: true,
+    height: 250,
     show: false, // Use 'ready-to-show' event to show window
     width: 450,
     webPreferences: {
