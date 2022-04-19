@@ -3,9 +3,11 @@ import './index.css';
 import {computed, ref, watch} from 'vue';
 import {Temporal} from '@js-temporal/polyfill';
 
-
 function runShutdown() {
-  window.commands.run('shutdown /f /s /t 0');
+  window.shutdown.electronShutdown({
+    force: true,
+    sudo: true,
+  });
 }
 
 const SETTINGS = ref(window.store.getSettings());
@@ -75,6 +77,10 @@ setInterval(() => t.value = getMinutesToNextShutdown(), 100);
 </script>
 
 <template>
+  <button @click="runShutdown">
+    test shutdown
+  </button>
+
   {{ t }} minutes until shutdown
   <br>
   <button
