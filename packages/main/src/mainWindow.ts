@@ -1,10 +1,10 @@
-import {BrowserWindow} from 'electron';
+import {BrowserWindow, ipcMain} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
-    frame: true,
+    frame: false,
     height: 250,
     show: false, // Use 'ready-to-show' event to show window
     width: 450,
@@ -22,12 +22,12 @@ async function createWindow() {
    * @see https://github.com/electron/electron/issues/25012
    */
   browserWindow.on('ready-to-show', () => {
-    browserWindow?.show();
-
     if (import.meta.env.DEV) {
       browserWindow?.webContents.openDevTools();
     }
   });
+
+  ipcMain.on('minimize-clicked', () => browserWindow.hide());
 
   /**
    * URL for main window.
@@ -57,6 +57,6 @@ export async function restoreOrCreateWindow() {
   if (window.isMinimized()) {
     window.restore();
   }
-
   window.focus();
+  return window;
 }

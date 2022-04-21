@@ -2,8 +2,9 @@
  * @module preload
  */
 
-import './nodeCrypto';
-import './versions';
 import './commands';
+import './ipcRenderer';
+import './nodeCrypto';
 import './shutdown';
 import './store';
+import './versions';

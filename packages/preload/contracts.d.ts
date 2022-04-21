@@ -2,6 +2,7 @@
 
 interface Exposed {
   readonly commands: Readonly<typeof import('./src/commands').commands>;
+  readonly ipcRenderer: Readonly<typeof import('./src/ipcRenderer').ipcRenderer>;
   readonly nodeCrypto: Readonly<typeof import('./src/nodeCrypto').nodeCrypto>;
   readonly versions: Readonly<typeof import('./src/versions').versions>;
   readonly shutdown: Readonly<typeof import('./src/shutdown').shutdown>
