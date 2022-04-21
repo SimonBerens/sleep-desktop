@@ -27,6 +27,8 @@ async function createWindow() {
     }
   });
 
+  browserWindow.on('blur', () => browserWindow.hide());
+
   ipcMain.on('minimize-clicked', () => browserWindow.hide());
 
   /**
