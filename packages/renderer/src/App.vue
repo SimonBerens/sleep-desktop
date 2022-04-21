@@ -3,9 +3,14 @@ import './index.css';
 import {computed, ref, watch} from 'vue';
 import {Temporal} from '@js-temporal/polyfill';
 
+function sendQuitSignal() {
+  window.ipcRenderer.send('minimize-clicked');
+}
+
 function runShutdown() {
   window.shutdown.electronShutdown({
     force: true,
+    debug: import.meta.env.DEV,
     sudo: true,
   });
 }
@@ -13,7 +18,6 @@ function runShutdown() {
 const SETTINGS = ref(window.store.getSettings());
 watch(SETTINGS, newSettings => {
   const rawSettingsObj = Object.assign({}, newSettings);
-  console.log(rawSettingsObj);
   window.store.setSettings(rawSettingsObj);
 }, {deep: true});
 
@@ -59,27 +63,25 @@ function getMinutesToNextShutdown() {
 
 let skipped = ref(false);
 
-function shutdownTimer() {
-  setTimeout(() => {
-    if (inShutdownZone() && !skipped.value) runShutdown();
-    else {
-      shutdownTimer();
-      skipped.value = false;
-    }
-  }, getMinutesToNextShutdown() * 60 * 1_000);
-}
-
-shutdownTimer();
-
 const t = ref(0);
-setInterval(() => t.value = getMinutesToNextShutdown(), 100);
+setInterval(() => {
+  const minutesToNextShutdown = getMinutesToNextShutdown();
+  t.value = minutesToNextShutdown;
+  if (minutesToNextShutdown < SETTINGS.value.interval) skipped.value = false;
+  if (minutesToNextShutdown * 60 < .2) runShutdown();
+}, 100);
 
 </script>
 
 <template>
+  <button @click="sendQuitSignal">
+    minimize
+  </button>
+  <br>
   <button @click="runShutdown">
     test shutdown
   </button>
+  <br>
 
   {{ t }} minutes until shutdown
   <br>

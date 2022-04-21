@@ -1,12 +1,13 @@
-import {app} from 'electron';
+import {app, nativeImage, Tray, Menu} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
+import icon from '../../../buildResources/icon.png';
 
 const ElectronStore = require('electron-store');
 ElectronStore.initRenderer();
 
 app.setLoginItemSettings({
-  openAtLogin: true,
+  openAtLogin: import.meta.env.PROD,
 });
 
 /**
@@ -43,8 +44,19 @@ app.on('activate', restoreOrCreateWindow);
 /**
  * Create app window when background process will be ready
  */
+let tray;
 app.whenReady()
   .then(restoreOrCreateWindow)
+  .then(() => {
+    tray = new Tray(nativeImage.createFromDataURL(icon));
+    tray.on('click', async () => {
+      const window = await restoreOrCreateWindow();
+      window.show();
+    });
+    tray.setContextMenu(Menu.buildFromTemplate([
+      {label: 'Quit', type: 'normal', role: 'quit'},
+    ]));
+  })
   .catch((e) => console.error('Failed create window:', e));
 
 
