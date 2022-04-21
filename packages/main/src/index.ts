@@ -6,9 +6,13 @@ import icon from '../../../buildResources/icon.png';
 const ElectronStore = require('electron-store');
 ElectronStore.initRenderer();
 
-app.setLoginItemSettings({
-  openAtLogin: import.meta.env.PROD,
-});
+if (import.meta.env.PROD) {
+  const AutoLaunch = require('auto-launch');
+  (new AutoLaunch({
+    name: 'Sleep',
+  })).enable();
+}
+
 
 /**
  * Prevent multiple instances
@@ -54,6 +58,12 @@ app.whenReady()
       window.show();
     });
     tray.setContextMenu(Menu.buildFromTemplate([
+      {
+        label: 'Show', type: 'normal', role: 'unhide', click: async () => {
+          const window = await restoreOrCreateWindow();
+          window.show();
+        },
+      },
       {label: 'Quit', type: 'normal', role: 'quit'},
     ]));
   })
