@@ -3,7 +3,7 @@ import './index.css';
 import {computed, ref, watch} from 'vue';
 import {Temporal} from '@js-temporal/polyfill';
 
-function sendQuitSignal() {
+function sendMinimizeSignal() {
   window.ipcRenderer.send('minimize-clicked');
 }
 
@@ -54,27 +54,35 @@ function minutesSinceStart() {
 
 function getMinutesToNextShutdown() {
   const m = minutesSinceStart();
-  const minutesAddedFromSkip = skipped.value ? SETTINGS.value.interval : 0;
-  const minutesFromStartToNextShutdown = Math.ceil(m / SETTINGS.value.interval) * SETTINGS.value.interval + minutesAddedFromSkip;
+  const minutesFromStartToNextShutdown = Math.ceil(m / SETTINGS.value.interval) * SETTINGS.value.interval;
   if (inShutdownZone(start.value.add({minutes: minutesFromStartToNextShutdown}))) {
     return minutesFromStartToNextShutdown - m;
-  } else return Temporal.Now.plainTimeISO().until(start.value).add({minutes: minutesAddedFromSkip}).total({unit: 'minutes'});
+  } else return Temporal.Now.plainTimeISO().until(start.value).total({unit: 'minutes'});
+}
+
+function getMinutesToNextShutdownWithSkipped() {
+  return getMinutesToNextShutdown() + (skipped.value ? SETTINGS.value.interval : 0);
 }
 
 let skipped = ref(false);
 
 const t = ref(0);
 setInterval(() => {
-  const minutesToNextShutdown = getMinutesToNextShutdown();
-  t.value = minutesToNextShutdown;
-  if (minutesToNextShutdown < SETTINGS.value.interval) skipped.value = false;
-  if (minutesToNextShutdown * 60 < .2) runShutdown();
+  const minutesWithSkipped = getMinutesToNextShutdownWithSkipped();
+  t.value = minutesWithSkipped;
+
+  if (getMinutesToNextShutdown() * 60 < 0.2) {
+    setTimeout(() => skipped.value = false, 200);
+  }
+  if (minutesWithSkipped * 60 < 0.2) {
+    runShutdown();
+  }
 }, 100);
 
 </script>
 
 <template>
-  <button @click="sendQuitSignal">
+  <button @click="sendMinimizeSignal">
     minimize
   </button>
   <br>
