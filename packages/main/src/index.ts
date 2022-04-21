@@ -58,6 +58,12 @@ app.whenReady()
       window.show();
     });
     tray.setContextMenu(Menu.buildFromTemplate([
+      {
+        label: 'Show', type: 'normal', role: 'unhide', click: async () => {
+          const window = await restoreOrCreateWindow();
+          window.show();
+        },
+      },
       {label: 'Quit', type: 'normal', role: 'quit'},
     ]));
   })
