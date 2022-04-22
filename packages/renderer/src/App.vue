@@ -71,14 +71,12 @@ if (window.Worker) {
   const worker = new Worker(new URL('./worker.ts', import.meta.url), {type: 'module'});
   worker.addEventListener('message', (e) => {
     if (e.data !== 'worker-interval') return;
-    console.log('worker interval');
     const minutesWithSkipped = getMinutesToNextShutdownWithSkipped();
     t.value = minutesWithSkipped;
     if ((SETTINGS.value.interval - getMinutesToNextShutdown()) * 60 < 0.3) {
       skipped.value = false;
     }
     if (minutesWithSkipped * 60 < 0.2) {
-      console.log('run shutdown at', Temporal.Now.plainTimeISO().toLocaleString());
       runShutdown();
     }
   });
