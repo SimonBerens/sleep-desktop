@@ -40,7 +40,6 @@ function inShutdownZone(plainTime ?: Temporal.PlainTime) {
   }
 }
 
-
 const midnight = Temporal.PlainTime.from({hour: 0});
 
 function minutesSinceStart() {
@@ -67,17 +66,24 @@ function getMinutesToNextShutdownWithSkipped() {
 let skipped = ref(false);
 
 const t = ref(0);
-setInterval(() => {
-  const minutesWithSkipped = getMinutesToNextShutdownWithSkipped();
-  t.value = minutesWithSkipped;
 
-  if (getMinutesToNextShutdown() * 60 < 0.2) {
-    setTimeout(() => skipped.value = false, 200);
-  }
-  if (minutesWithSkipped * 60 < 0.2) {
-    runShutdown();
-  }
-}, 100);
+if (window.Worker) {
+  const worker = new Worker(new URL('./worker.ts', import.meta.url), {type: 'module'});
+  worker.addEventListener('message', (e) => {
+    if (e.data !== 'worker-interval') return;
+    console.log('worker interval');
+    const minutesWithSkipped = getMinutesToNextShutdownWithSkipped();
+    t.value = minutesWithSkipped;
+    if ((SETTINGS.value.interval - getMinutesToNextShutdown()) * 60 < 0.3) {
+      skipped.value = false;
+    }
+    if (minutesWithSkipped * 60 < 0.2) {
+      console.log('run shutdown at', Temporal.Now.plainTimeISO().toLocaleString());
+      runShutdown();
+    }
+  });
+}
+
 
 </script>
 
