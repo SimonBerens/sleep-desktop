@@ -5,9 +5,9 @@ import {URL} from 'url';
 async function createWindow() {
   const browserWindow = new BrowserWindow({
     frame: false,
-    height: 250,
+    height: 145,
     show: false, // Use 'ready-to-show' event to show window
-    width: 450,
+    width: 362,
     webPreferences: {
       nativeWindowOpen: true,
       webviewTag: false, // The webview tag is not recommended. Consider alternatives like iframe or Electron's BrowserView. https://www.electronjs.org/docs/latest/api/webview-tag#warning

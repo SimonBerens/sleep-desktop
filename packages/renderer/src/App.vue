@@ -2,10 +2,10 @@
 import './index.css';
 import {computed, ref, watch} from 'vue';
 import {Temporal} from '@js-temporal/polyfill';
-
-function sendMinimizeSignal() {
-  window.ipcRenderer.send('minimize-clicked');
-}
+import Timer from '/@/components/Timer.vue';
+import MaskedTime from '/@/components/MaskedTime.vue';
+import MinimizeButton from '/@/components/MinimizeButton.vue';
+import SkipButton from '/@/components/SkipButton.vue';
 
 function runShutdown() {
   window.shutdown.electronShutdown({
@@ -82,63 +82,57 @@ if (window.Worker) {
   });
 }
 
+function tieStart(hours: number, minutes: number) {
+  SETTINGS.value.startHour = hours;
+  SETTINGS.value.startMinute = minutes;
+}
+
+function tieEnd(hours: number, minutes: number) {
+  SETTINGS.value.endHour = hours;
+  SETTINGS.value.endMinute = minutes;
+}
 
 </script>
 
 <template>
-  <button @click="sendMinimizeSignal">
-    minimize
-  </button>
-  <br>
-  <button @click="runShutdown">
-    test shutdown
-  </button>
-  <br>
-
-  {{ t }} minutes until shutdown
-  <br>
-  <button
-    :disabled="skipped"
-    @click="skipped=true"
-  >
-    Skip
-  </button>
-
-  <fieldset>
-    <legend>Settings</legend>
-    <label> Start Hour
-      <input
-        v-model.number="SETTINGS.startHour"
-        type="number"
-      >
-    </label>
-    <br>
-    <label> Start Minute
-      <input
-        v-model.number="SETTINGS.startMinute"
-        type="number"
-      >
-    </label>
-    <br>
-    <label> End Hour
-      <input
-        v-model.number="SETTINGS.endHour"
-        type="number"
-      >
-    </label>
-    <br>
-    <label> End Minute
-      <input
-        v-model.number="SETTINGS.endMinute"
-        type="number"
-      >
-    </label>
-    <br>
-    <label> Interval
-      <input
-        v-model.number="SETTINGS.interval"
-        type="number"
-      >
-    </label>
-  </fieldset>
+  <MinimizeButton />
+  <div class="bg-[#313131] px-9 py-5 h-screen w-screen font-['Fira_Code']">
+    <div class="text-[#A7A5A5] text-3xl font-semibold text-center">
+      SHUTDOWN IN
+    </div>
+    <Timer :minutes="t" />
+    <div class="flex flex-row align-middle mt-2">
+      <div class="w-[100px] flex flex-col">
+        <span class="text-xl text-[#A7A5A5] font-medium">START</span>
+        <MaskedTime
+          :hour="SETTINGS.startHour"
+          :minute="SETTINGS.startMinute"
+          @time-update="tieStart"
+        />
+      </div>
+      <div class="w-[100px] flex flex-col">
+        <span class="text-xl text-[#A7A5A5] font-medium">END</span>
+        <MaskedTime
+          :hour="SETTINGS.endHour"
+          :minute="SETTINGS.endMinute"
+          @time-update="tieEnd"
+        />
+      </div>
+      <div class="w-[100px] flex flex-col">
+        <span class="text-xl text-[#A7A5A5] font-medium">INTERVAL</span>
+        <div class="flex flex-row">
+          <input
+            v-model.number="SETTINGS.interval"
+            type="number"
+            class="w-7 mr-0.5 bg-white/[.15] text-white text-xl"
+          >
+          <span class="text-white text-lg">min</span>
+        </div>
+      </div>
+      <SkipButton
+        :skipped="skipped"
+        @click="skipped=true"
+      />
+    </div>
+  </div>
 </template>
