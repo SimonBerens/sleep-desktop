@@ -6,7 +6,7 @@ async function createWindow() {
   const scaleFactor = screen?.getPrimaryDisplay()?.scaleFactor ?? 1;
   const browserWindow = new BrowserWindow({
     frame: false,
-    height: 140 * scaleFactor,
+    height: 146 * scaleFactor,
     show: false, // Use 'ready-to-show' event to show window
     width: 362 * scaleFactor,
     webPreferences: {
