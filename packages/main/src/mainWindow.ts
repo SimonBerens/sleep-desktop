@@ -3,7 +3,7 @@ import {join} from 'path';
 import {URL} from 'url';
 
 async function createWindow() {
-  const scaleFactor = screen.getPrimaryDisplay().scaleFactor;
+  const scaleFactor = screen?.getPrimaryDisplay()?.scaleFactor ?? 1;
   const browserWindow = new BrowserWindow({
     frame: false,
     height: 140 * scaleFactor,
