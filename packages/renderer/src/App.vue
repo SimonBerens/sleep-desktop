@@ -73,7 +73,8 @@ if (window.Worker) {
     if (e.data !== 'worker-interval') return;
     const minutesWithSkipped = getMinutesToNextShutdownWithSkipped();
     t.value = minutesWithSkipped;
-    if ((SETTINGS.value.interval - getMinutesToNextShutdown()) * 60 < 0.3) {
+    const secondsAfterSkippedShutdown = (SETTINGS.value.interval - getMinutesToNextShutdown()) * 60;
+    if (0 <= secondsAfterSkippedShutdown && secondsAfterSkippedShutdown < 0.3) {
       skipped.value = false;
     }
     if (minutesWithSkipped * 60 < 0.2) {
